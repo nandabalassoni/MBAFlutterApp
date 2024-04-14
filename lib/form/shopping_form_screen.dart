@@ -1,10 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ShoppingFormScreen extends StatelessWidget {
+class ShoppingFormScreen extends StatefulWidget {
 
   ShoppingFormScreen({super.key});
 
+  @override
+  _ShoppingFormScreenState createState() => _ShoppingFormScreenState();
+
+}
+
+class _ShoppingFormScreenState extends State<ShoppingFormScreen>{
+
+  final _nameController = TextEditingController();
+  final _taxController= TextEditingController();
+  final _dollarPriceController = TextEditingController();
+
   bool pagouComCartao = true;
+
+  void _saveData() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('name', _nameController.text);
+      await prefs.setString('tax', _taxController.text);
+      await prefs.setString('dollarPrice', _dollarPriceController.text);
+      String nome = prefs.getString('name') ?? "null";
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('nome: $nome'))
+      );
+    }
+    catch(error){
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('error saving'))
+      );
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +49,7 @@ class ShoppingFormScreen extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(left: 20, top: 40, right: 20),
             child: TextField(
+                controller: _nameController,
                 decoration: InputDecoration(
                   filled: true,
                   labelText: 'Nome do produto',
@@ -34,6 +66,7 @@ class ShoppingFormScreen extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(left: 20, top: 20, right: 20),
             child: TextField(
+              controller: _taxController,
               decoration: InputDecoration(
                 filled: true,
                 labelText: 'Imposto do ESTADO (%)',
@@ -50,6 +83,7 @@ class ShoppingFormScreen extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(left: 20, top: 20, right: 20),
             child: TextField(
+              controller: _dollarPriceController,
               decoration: InputDecoration(
                 filled: true,
                 labelText: 'Valor do produto em U\$',
@@ -83,7 +117,7 @@ class ShoppingFormScreen extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(left: 20, top: 20, right: 20),
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: (){},
               icon: Icon(Icons.image_outlined),
               label: Text(
                 'Escolher foto',
@@ -100,7 +134,9 @@ class ShoppingFormScreen extends StatelessWidget {
               height: 40,
               child:
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: (){
+                    _saveData();
+                    },
                   child: Text('Cadastrar'),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.greenAccent.withOpacity(0.7),
