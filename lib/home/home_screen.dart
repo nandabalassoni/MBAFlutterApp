@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     return MaterialApp(
       title: '',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amberAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
         useMaterial3: true,
       ),
       home: const MyHomeScreen(),
@@ -53,7 +53,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ShoppingFormScreen())
+                  MaterialPageRoute(builder: (context) => ShoppingFormScreen())
                 );
               },
               icon: const Icon(Icons.add_circle_outline_outlined)
