@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget{
-  const SettingsWidget({super.key});
+  const SettingScreen({super.key});
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState();
+  State<SettingScreen> createState() => _SettingsScreenState();
 
 }
 
-class _SettingsWidgetState extends State<SettingsWidget>{
+class _SettingsScreenState extends State<SettingScreen> {
   double _iofValue = 0.0;
   double _exchangeRateValue = 0.0;
   final _iofTextController = TextEditingController();

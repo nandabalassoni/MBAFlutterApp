@@ -39,8 +39,8 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
   final List<Widget> _screens = [
     const ShoppingListScreen(),
-    const SettingsScreen(),
-    const SubTotalScreen()
+    SettingScreen(),
+    SubTotalScreen()
   ];
 
   @override
