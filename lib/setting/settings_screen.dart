@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsWidget extends StatefulWidget{
+class SettingScreen extends StatefulWidget{
   const SettingsWidget({super.key});
 
   @override
