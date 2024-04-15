@@ -53,7 +53,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ShoppingFormScreen())
+                  MaterialPageRoute(builder: (context) => ShoppingFormScreen(onProductAdded: () {  },))
                 );
               },
               icon: const Icon(Icons.add_circle_outline_outlined)
@@ -62,7 +62,11 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_screenTitles[currentScreenIndex]),
       ),
-      body: _screens[currentScreenIndex],
+      //body: _screens[currentScreenIndex],
+      body: IndexedStack(
+        index: currentScreenIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentScreenIndex,
         onDestinationSelected: (int index) {
