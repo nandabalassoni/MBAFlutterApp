@@ -39,7 +39,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
   final List<Widget> _screens = [
     const ShoppingListScreen(),
-    const SettingsWidget(),
+    const SettingsScreen(),
     const SubTotalScreen()
   ];
 
