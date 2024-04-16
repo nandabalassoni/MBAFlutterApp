@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mba_flutter_app/service/sqlite_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/product.dart';
@@ -22,18 +23,13 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen>{
 
   bool pagouComCartao = true;
 
+
+
   void _saveData() async {
 
     try {
-      // Cria um novo produto com os dados do formulário
-      // Product product = Product(
-      //   name: _nameController.text,
-      //   tax: double.parse(_taxController.text),
-      //   price: double.parse(_dollarPriceController.text),
-      //   isPaidwithCreditCard: pagouComCartao,
-      //   urlPhoto: '', //  precisa fornecer um valor para urlPhoto
-      // );
       Product product = Product(
+          null, //id
           _nameController.text, // name
           double.parse(_taxController.text), // tax
           double.parse(_dollarPriceController.text), // price
@@ -41,11 +37,20 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen>{
           '' // urlPhoto - você precisa fornecer um valor para urlPhoto
       );
 
+      //Cria uma nova instância do SqliteService
+      late SqliteService _sqliteService;
+      _sqliteService = SqliteService();
+
       // Cria uma nova instância do ProductService
-      ProductService productService = ProductService();
+      // ProductService productService = ProductService();
 
       // Salva o produto usando o ProductService
-      await productService.saveProduct(product);
+      // await productService.saveProduct(product);
+
+      //Salva o produto a tabela Products usando o SqliteService
+      int result = 0;
+      result = await _sqliteService.createProduct(product);
+      print('Result $result');
 
       // Chama o callback para informar que um novo produto foi adicionado
       widget.onProductAdded();
@@ -58,24 +63,6 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen>{
           const SnackBar(content: Text('error saving'))
       );
     }
-    // try {
-    //   final prefs = await SharedPreferences.getInstance();
-    //   await prefs.setString('name', _nameController.text);
-    //   await prefs.setString('tax', _taxController.text);
-    //   await prefs.setString('dollarPrice', _dollarPriceController.text);
-    //   String nome = prefs.getString('name') ?? "null";
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('nome: $nome'))
-    //   );
-    //   widget.onProductAdded();
-    //
-    //   // Retorna para a tela anterior
-    //   Navigator.pop(context);
-    // } catch (error) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //       const SnackBar(content: Text('error saving'))
-    //   );
-    // }
   }
 
   @override
