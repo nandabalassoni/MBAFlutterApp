@@ -30,4 +30,14 @@ class SqliteService {
         conflictAlgorithm: ConflictAlgorithm.replace);
 
   }
+
+  //Retorna a lista de todos os produtos cadastrados na tabela Products
+  Future<List<Product>> getProducts() async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> queryResult =
+    await db.query('Products');
+    return queryResult.map((e) => Product.fromMap(e)).toList();
+  }
+
+
 }
