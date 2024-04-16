@@ -17,8 +17,8 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
   final _formatDolar = new NumberFormat.currency(locale: "en_US", symbol: "");
   final _formatReal = new NumberFormat.currency(locale: "pt_BR", symbol: "");
   final _products = [
-    Product('iPhone 15 Pro Max', 0.1, 999.0, true, ''),
-    Product('MacBook Pro', 0.2, 1999.0, true, ''),
+    // Product('iPhone 15 Pro Max', 0.1, 999.0, true, ''),
+    // Product('MacBook Pro', 0.2, 1999.0, true, ''),
   ]; // TODO: Pegar os produtos do User Preferences.
 
   @override
@@ -51,7 +51,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
                 textAlign: TextAlign.left,
               ),
               Text(
-                '\$ ${_formatDolar.format(_totalPrices(_products))}',
+                ''/*'''\$ ${_formatDolar.format(_totalPrices(_products))}'*/,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
@@ -73,7 +73,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
                 style: TextStyle(fontSize: 18),
               ),
               Text(
-                '\$ ${_formatDolar.format(_totalPricesWithTaxes(_products, _iof))}',
+                ''/*'''\$ ${_formatDolar.format(_totalPricesWithTaxes(_products, _iof))}'*/,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
@@ -126,7 +126,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
 
       productPrice = product.price + (product.price * product.tax / 100);
 
-      if(product.isPaidwithCreditCard) {
+      if(product.isPaidWithCreditCard) {
         productPrice += productPrice * iof / 100;
       }
 
