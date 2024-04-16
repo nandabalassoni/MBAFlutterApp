@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mba_flutter_app/provider/settingProvider.dart';
+import 'package:mba_flutter_app/provider/shoppingProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/product.dart';
@@ -18,10 +18,6 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
 
   final _formatDolar = NumberFormat.currency(locale: "en_US", symbol: "");
   final _formatReal = NumberFormat.currency(locale: "pt_BR", symbol: "");
-  final List<Product> _products = [
-    Product(0, 'iPhone 15 Pro', 5.9, 999.0, true, ''),
-    Product(1, 'iPhone 14 Pro', 5.9, 899.0, true, '')
-  ]; // TODO: Pegar os produtos do User Preferences.
 
   @override
   void initState() {
@@ -32,13 +28,13 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
   Future<void> _loadValues() async {
     final prefs = await SharedPreferences.getInstance();
 
-    Provider.of<SettingProvider>(context, listen: false).updateSetting(Setting(prefs.getDouble('iof') ?? 0.0, prefs.getDouble('exchangeRate') ?? 0.0));
+    Provider.of<ShoppingProvider>(context, listen: false).updateSetting(Setting(prefs.getDouble('iof') ?? 0.0, prefs.getDouble('exchangeRate') ?? 0.0));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingProvider>(
-      builder: (context, prefs, _) {
+    return Consumer<ShoppingProvider>(
+      builder: (context, provider, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,7 +49,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
                     textAlign: TextAlign.left,
                   ),
                   Text(
-                    '\$ ${_formatDolar.format(_totalPrices(_products))}',
+                    '\$ ${_formatDolar.format(_totalPrices(provider.products))}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
@@ -75,7 +71,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
-                    '\$ ${_formatDolar.format(_totalPricesWithTaxes(_products, prefs.setting.iof))}',
+                    '\$ ${_formatDolar.format(_totalPricesWithTaxes(provider.products, provider.setting.iof))}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
@@ -96,7 +92,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
-                    'R\$ ${_formatReal.format(_totalPricesReal(_totalPricesWithTaxes(_products, prefs.setting.iof), prefs.setting.exchangeRate))}',
+                    'R\$ ${_formatReal.format(_totalPricesReal(_totalPricesWithTaxes(provider.products, provider.setting.iof), provider.setting.exchangeRate))}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,

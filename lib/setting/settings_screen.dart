@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mba_flutter_app/provider/settingProvider.dart';
+import 'package:mba_flutter_app/provider/shoppingProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,7 +52,7 @@ class _SettingsScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingProvider>(
+    return Consumer<ShoppingProvider>(
       builder: (context, prefsProvider, _) {
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
