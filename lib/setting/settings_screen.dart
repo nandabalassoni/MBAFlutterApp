@@ -2,7 +2,11 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mba_flutter_app/provider/settingProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../model/setting.dart';
 
 class SettingScreen extends StatefulWidget{
   const SettingScreen({super.key});
@@ -48,50 +52,62 @@ class _SettingsScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Consumer<SettingProvider>(
+      builder: (context, prefsProvider, _) {
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-          Container(
-            margin: EdgeInsets.only(left: 20, top: 40, right: 20, bottom: 20),
-            child: TextField(
-              controller: _exchangeRateTextController,
-              onChanged: (newValue) {
-                _saveValues();
-                },
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Cotação do dolar em R\$',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none
+              Container(
+                margin: EdgeInsets.only(left: 20, top: 40, right: 20, bottom: 20),
+                child: TextField(
+                  controller: _exchangeRateTextController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    labelText: 'Cotação do dolar em R\$',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none
+                    ),
+                    prefixIcon: Icon(Icons.monetization_on_outlined),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                 ),
-                prefixIcon: Icon(Icons.monetization_on_outlined),
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-            ),
-          ),
 
-          Container(
-            margin: EdgeInsets.all(20),
-            child: TextField(
-              controller: _iofTextController,
-              onChanged: (newValue) {
-                _saveValues();
-              },
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'IOF (\%)',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none
+              Container(
+                margin: EdgeInsets.all(20),
+                child: TextField(
+                  controller: _iofTextController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    labelText: 'IOF (\%)',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none
+                    ),
+                    prefixIcon: Icon(Icons.money_off_outlined),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                 ),
-                prefixIcon: Icon(Icons.money_off_outlined),
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-            ),
-          ),
-        ]
+
+              Container(
+                margin: EdgeInsets.all(20),
+                child: ElevatedButton(
+                  onPressed: (){
+                    // _saveValues();
+                    prefsProvider.updateSetting(Setting(double.parse(_iofTextController.text), double.parse(_exchangeRateTextController.text)));
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.greenAccent.withOpacity(0.7),
+                  ),
+                  child: const Text('Salvar'),
+                ),
+              ),
+            ]
+        );
+      }
     );
   }
 

@@ -84,7 +84,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_screenTitles[currentScreenIndex]),
       ),
-      //body: _screens[currentScreenIndex],
       body: IndexedStack(
         index: currentScreenIndex,
         children: _screens,

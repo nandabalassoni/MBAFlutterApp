@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mba_flutter_app/provider/settingProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/product.dart';
+import '../model/setting.dart';
 
 class SubTotalScreen extends StatefulWidget {
 
-  SubTotalScreen({super.key});
+  const SubTotalScreen({super.key});
 
   @override
   State<SubTotalScreen> createState() => _SubTotalScreenState();
@@ -13,98 +16,99 @@ class SubTotalScreen extends StatefulWidget {
 
 class _SubTotalScreenState extends State<SubTotalScreen> {
 
-  double _iof = 0.0; // TODO: Pegar o valor do IOF da screen settings.
-  final _formatDolar = new NumberFormat.currency(locale: "en_US", symbol: "");
-  final _formatReal = new NumberFormat.currency(locale: "pt_BR", symbol: "");
-  final _products = [
-    // Product('iPhone 15 Pro Max', 0.1, 999.0, true, ''),
-    // Product('MacBook Pro', 0.2, 1999.0, true, ''),
+  final _formatDolar = NumberFormat.currency(locale: "en_US", symbol: "");
+  final _formatReal = NumberFormat.currency(locale: "pt_BR", symbol: "");
+  final List<Product> _products = [
+    Product(0, 'iPhone 15 Pro', 5.9, 999.0, true, ''),
+    Product(1, 'iPhone 14 Pro', 5.9, 899.0, true, '')
   ]; // TODO: Pegar os produtos do User Preferences.
 
   @override
   void initState() {
-    super.initState();
     _loadValues();
+    super.initState();
   }
 
   Future<void> _loadValues() async {
     final prefs = await SharedPreferences.getInstance();
 
-    setState(() {
-      _iof = prefs.getDouble('iof') ?? 0.0;
-    });
+    Provider.of<SettingProvider>(context, listen: false).updateSetting(Setting(prefs.getDouble('iof') ?? 0.0, prefs.getDouble('exchangeRate') ?? 0.0));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: EdgeInsets.only(left: 20, top: 40, bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Valor dos produtos (\$)',
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.left,
+    return Consumer<SettingProvider>(
+      builder: (context, prefs, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 20, top: 40, bottom: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Valor dos produtos (\$)',
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    '\$ ${_formatDolar.format(_totalPrices(_products))}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.blueAccent,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
               ),
-              Text(
-                ''/*'''\$ ${_formatDolar.format(_totalPrices(_products))}'*/,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Colors.blueAccent,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ],
-          ),
-        ),
+            ),
 
-        Container(
-          margin: EdgeInsets.only(left: 20, top: 20, bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total com impostos(\$)',
-                style: TextStyle(fontSize: 18),
+            Container(
+              margin: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Total com impostos(\$)',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    '\$ ${_formatDolar.format(_totalPricesWithTaxes(_products, prefs.setting.iof))}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                ''/*'''\$ ${_formatDolar.format(_totalPricesWithTaxes(_products, _iof))}'*/,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
 
-        Container(
-          margin: EdgeInsets.only(left: 20, top: 20, bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Valor final em reais',
-                style: TextStyle(fontSize: 18),
+            Container(
+              margin: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Valor final em reais',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    'R\$ ${_formatReal.format(_totalPricesReal(_totalPricesWithTaxes(_products, prefs.setting.iof), prefs.setting.exchangeRate))}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                'R\$ ${_formatReal.format(_totalPricesReal(100.0, 5.1))}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Colors.green,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
