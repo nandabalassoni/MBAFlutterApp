@@ -18,9 +18,9 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
 
   final _formatDolar = NumberFormat.currency(locale: "en_US", symbol: "");
   final _formatReal = NumberFormat.currency(locale: "pt_BR", symbol: "");
-  final _products = [
-    Product('iPhone 15 Pro Max', 0.1, 999.0, true, ''),
-    Product('MacBook Pro', 0.2, 1999.0, true, ''),
+  final List<Product> _products = [
+    Product(0, 'iPhone 15 Pro', 5.9, 999.0, true, ''),
+    Product(1, 'iPhone 14 Pro', 5.9, 899.0, true, '')
   ]; // TODO: Pegar os produtos do User Preferences.
 
   @override
@@ -130,7 +130,7 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
 
       productPrice = product.price + (product.price * product.tax / 100);
 
-      if(product.isPaidwithCreditCard) {
+      if(product.isPaidWithCreditCard) {
         productPrice += productPrice * iof / 100;
       }
 

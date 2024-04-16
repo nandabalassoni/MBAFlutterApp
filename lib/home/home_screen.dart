@@ -4,6 +4,9 @@ import 'package:mba_flutter_app/list/shopping_list_screen.dart';
 import 'package:mba_flutter_app/setting/settings_screen.dart';
 import 'package:mba_flutter_app/total_purchase/sub_total_screen.dart';
 
+import '../model/product.dart';
+import '../service/sqlite_service.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -42,6 +45,25 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     SettingScreen(),
     SubTotalScreen()
   ];
+
+  //Inicializa o banco de dados ao iniciar o state
+  late SqliteService _sqliteService;
+
+  List<Product> _products = [];
+
+  @override
+  void initState(){
+    super.initState();
+    _sqliteService = SqliteService();
+    _sqliteService.initializeDB().whenComplete(() async {
+      _products = await _sqliteService.getProducts();
+      setState(() {
+        //TODO: Atualizar widget com dados retornados do getProducts()
+      });
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
