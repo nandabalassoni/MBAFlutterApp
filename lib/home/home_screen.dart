@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mba_flutter_app/form/shopping_form_screen.dart';
 import 'package:mba_flutter_app/list/shopping_list_screen.dart';
+import 'package:mba_flutter_app/service/sqlite_service.dart';
 import 'package:mba_flutter_app/setting/settings_screen.dart';
 import 'package:mba_flutter_app/total_purchase/sub_total_screen.dart';
-
-import '../model/product.dart';
-import '../service/sqlite_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,23 +13,20 @@ class HomeScreen extends StatelessWidget {
     return MaterialApp(
       title: '',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomeScreen(),
+      home: _MyHomeScreen(),
     );
   }
 }
 
-class MyHomeScreen extends StatefulWidget {
-  const MyHomeScreen({super.key});
-
+class _MyHomeScreen extends StatefulWidget {
   @override
-  State<MyHomeScreen> createState() => _MyHomeScreenState();
+  State<_MyHomeScreen> createState() => _MyHomeScreenState();
 }
 
-class _MyHomeScreenState extends State<MyHomeScreen> {
-
+class _MyHomeScreenState extends State<_MyHomeScreen> {
   int currentScreenIndex = 0;
 
   final List<String> _screenTitles = [
@@ -42,28 +37,19 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
   final List<Widget> _screens = [
     const ShoppingListScreen(),
-    SettingScreen(),
-    SubTotalScreen()
+    const SettingScreen(),
+    const SubTotalScreen()
   ];
 
   //Inicializa o banco de dados ao iniciar o state
   late SqliteService _sqliteService;
 
-  List<Product> _products = [];
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _sqliteService = SqliteService();
-    _sqliteService.initializeDB().whenComplete(() async {
-      _products = await _sqliteService.getProducts();
-      setState(() {
-        //TODO: Atualizar widget com dados retornados do getProducts()
-      });
-    });
+    _sqliteService.initializeDB().whenComplete(() async {});
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +58,25 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         elevation: 0,
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ShoppingFormScreen(onProductAdded: () {  },))
-                );
-              },
-              icon: const Icon(Icons.add_circle_outline_outlined)
-          )
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ShoppingFormScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.add_circle_outline_outlined,
+              color: Colors.white,
+            ),
+          ),
         ],
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(_screenTitles[currentScreenIndex]),
+        backgroundColor: Colors.blueAccent.withOpacity(0.8),
+        title: Text(
+          _screenTitles[currentScreenIndex],
+          style: const TextStyle(color: Colors.white,),
+        ),
       ),
       body: IndexedStack(
         index: currentScreenIndex,

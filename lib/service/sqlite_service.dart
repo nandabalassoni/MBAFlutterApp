@@ -31,6 +31,16 @@ class SqliteService {
 
   }
 
+  updateProduct(Product product) async {
+    final Database db = await initializeDB();
+    db.update('Products', {'name': product.name, 'tax': product.tax, 'price': product.price, 'isPaidWithCreditCard': product.isPaidWithCreditCard, 'urlPhoto': product.urlPhoto}, where: 'id = ?', whereArgs: [product.id]);
+  }
+
+  deleteProduct(int id) async {
+    final Database db = await initializeDB();
+    db.delete('Products', where: 'id = ?', whereArgs: [id]);
+  }
+
   //Retorna a lista de todos os produtos cadastrados na tabela Products
   Future<List<Product>> getProducts() async {
     final Database db = await initializeDB();
