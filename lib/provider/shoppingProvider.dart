@@ -1,11 +1,26 @@
 import 'package:flutter/foundation.dart';
+import 'package:mba_flutter_app/model/product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/setting.dart';
 
-class SettingProvider extends ChangeNotifier {
+class ShoppingProvider extends ChangeNotifier {
+  List<Product> _products = [];
   Setting _setting = Setting(0.0, 0.0);
 
+  List<Product> get products => _products;
   Setting get setting => _setting;
+
+  void addProduct(Product product) {
+    _products.add(product);
+
+    notifyListeners();
+  }
+
+  void removeProduct(Product product) {
+    _products.remove(product);
+
+    notifyListeners();
+  }
 
   void updateSetting(Setting setting) {
     _setting.iof = setting.iof;

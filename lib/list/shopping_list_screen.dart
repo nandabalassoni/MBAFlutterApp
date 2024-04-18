@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mba_flutter_app/dao/shopping_dao.dart';
 import 'package:mba_flutter_app/form/shopping_form_screen.dart';
-
-import '../model/product.dart';
-import '../service/product_service.dart';
+import 'package:mba_flutter_app/model/product.dart';
+import 'package:mba_flutter_app/provider/shoppingProvider.dart';
+import 'package:mba_flutter_app/service/sqlite_service.dart';
+import 'package:provider/provider.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({super.key});
@@ -12,54 +14,60 @@ class ShoppingListScreen extends StatefulWidget {
 }
 
 class ShoppingListScreenState extends State<ShoppingListScreen> {
-  List<Product> products = [];
+  List<Product> _products = [];
+  final _shoppingDAO = ShoppingDAO();
 
   @override
   void initState() {
     super.initState();
-    updateProductList();
+    _loadProduct();
   }
 
-  void updateProductList() async {
-    print('updateProductList called');
-    var productService = ProductService();
-    Map<String, Product> productMap = await productService.getProducts();
-    print('Retrieved products: $productMap');
-    List<Product> productList = productMap.values.toList();
-    setState(() {
-      products = productList;
-    });
-    print('Updated state: $products');
+  void _loadProduct() async {
+    if (_products.isEmpty) {
+      List<Product> listP = await _shoppingDAO.getAllProduct();
+
+      setState(() {
+        _products = listP;
+
+        for(final product in _products) {
+          Provider.of<ShoppingProvider>(context, listen: false).addProduct(product);
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Building list with ${products.length} products');
-    return ListView(
-      children: products.map((product) {
-        print('Building Card for product: ${product.name}');
-        return Card(
-          clipBehavior: Clip.hardEdge,
-          child: InkWell(
-            splashColor: Colors.amberAccent.withAlpha(30),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ShoppingFormScreen(
-                        onProductAdded: updateProductList,
-                      ),
+    return Consumer<ShoppingProvider>(
+      builder: (context, provider, _) {
+        return ListView.builder(
+          itemCount: provider.products.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              clipBehavior: Clip.hardEdge,
+              child: InkWell(
+                splashColor: Colors.white,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ShoppingFormScreen(
+                            product: provider.products[index],
+                          ),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  leading: const FlutterLogo(),
+                  title: Text(provider.products[index].name,),
                 ),
-              );
-            },
-            child: ListTile(
-              leading: const FlutterLogo(),
-              title: Text(product.name),
-            ),
-          ),
+              ),
+            );
+          },
         );
-      }).toList(),
+      },
     );
   }
 }
