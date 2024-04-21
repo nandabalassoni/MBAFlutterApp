@@ -23,12 +23,25 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
   bool pagouComCartao = true;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     if (widget.product != null) {
       _nameController.text = widget.product?.name ?? '';
       _taxController.text = widget.product?.tax.toString() ?? '0.0';
       _dollarPriceController.text = widget.product?.price.toString() ?? '0.0';
       pagouComCartao = widget.product?.isPaidWithCreditCard ?? false;
+      _buttonTitleSaveOrUpdate = 'Atualizar';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.product != null) {
+      _nameController.text = widget.product?.name ?? '';
+      _taxController.text = widget.product?.tax.toString() ?? '0.0';
+      _dollarPriceController.text = widget.product?.price.toString() ?? '0.0';
+      // pagouComCartao = widget.product?.isPaidWithCreditCard ?? false;
       _buttonTitleSaveOrUpdate = 'Atualizar';
 
       return Consumer<ShoppingProvider>(
@@ -99,7 +112,11 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                       SwitchListTile(
                         secondary: const Icon(Icons.credit_card),
                         value: pagouComCartao,
-                        onChanged: (bool value) {},
+                        onChanged: (bool value) {
+                          setState(() {
+                            pagouComCartao = value;
+                          });
+                        },
                         title: const Text('Pagou com cartão?'),
                       ),
                     ],
@@ -253,7 +270,11 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                     SwitchListTile(
                       secondary: const Icon(Icons.credit_card),
                       value: pagouComCartao,
-                      onChanged: (bool value) {},
+                      onChanged: (bool value) {
+                        setState(() {
+                          pagouComCartao = value;
+                        });
+                      },
                       title: const Text('Pagou com cartão?'),
                     ),
                   ],
