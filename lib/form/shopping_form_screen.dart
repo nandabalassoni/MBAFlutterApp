@@ -20,7 +20,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
   final _shoppingDAO = ShoppingDAO();
 
   String _buttonTitleSaveOrUpdate = 'Cadastrar';
-  bool pagouComCartao = true;
+  bool _isPaidWithCreditCard = true;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
       _nameController.text = widget.product?.name ?? '';
       _taxController.text = widget.product?.tax.toString() ?? '0.0';
       _dollarPriceController.text = widget.product?.price.toString() ?? '0.0';
-      pagouComCartao = widget.product?.isPaidWithCreditCard ?? false;
+      _isPaidWithCreditCard = widget.product?.isPaidWithCreditCard ?? false;
       _buttonTitleSaveOrUpdate = 'Atualizar';
     }
   }
@@ -38,12 +38,6 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.product != null) {
-      _nameController.text = widget.product?.name ?? '';
-      _taxController.text = widget.product?.tax.toString() ?? '0.0';
-      _dollarPriceController.text = widget.product?.price.toString() ?? '0.0';
-      // pagouComCartao = widget.product?.isPaidWithCreditCard ?? false;
-      _buttonTitleSaveOrUpdate = 'Atualizar';
-
       return Consumer<ShoppingProvider>(
         builder: (context, provider, _) {
           return Scaffold(
@@ -67,6 +61,9 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                       ),
                       prefixIcon: const Icon(Icons.people_alt_outlined),
                     ),
+                    onTapOutside: (PointerDownEvent event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                     keyboardType: TextInputType.text,
                   ),
                 ),
@@ -83,6 +80,9 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                       ),
                       prefixIcon: const Icon(Icons.money_off_outlined),
                     ),
+                    onTapOutside: (PointerDownEvent event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                   ),
@@ -92,13 +92,17 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                   child: TextField(
                     controller: _dollarPriceController,
                     decoration: InputDecoration(
-                        filled: true,
-                        labelText: 'Valor do produto em U\$',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: const Icon(Icons.monetization_on_outlined)),
+                      filled: true,
+                      labelText: 'Valor do produto em U\$',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(Icons.monetization_on_outlined),
+                    ),
+                    onTapOutside: (PointerDownEvent event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                   ),
@@ -111,10 +115,10 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                     children: [
                       SwitchListTile(
                         secondary: const Icon(Icons.credit_card),
-                        value: pagouComCartao,
+                        value: _isPaidWithCreditCard,
                         onChanged: (bool value) {
                           setState(() {
-                            pagouComCartao = value;
+                            _isPaidWithCreditCard = value;
                           });
                         },
                         title: const Text('Pagou com cartão?'),
@@ -166,9 +170,8 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                                 _nameController.text,
                                 double.parse(_taxController.text),
                                 double.parse(_dollarPriceController.text),
-                                pagouComCartao,
-                                ''
-                            );
+                                _isPaidWithCreditCard,
+                                '');
 
                             provider.removeProduct(widget.product!);
                             provider.addProduct(productUpdated);
@@ -225,6 +228,9 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                     ),
                     prefixIcon: const Icon(Icons.people_alt_outlined),
                   ),
+                  onTapOutside: (PointerDownEvent event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   keyboardType: TextInputType.text,
                 ),
               ),
@@ -241,6 +247,9 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                     ),
                     prefixIcon: const Icon(Icons.money_off_outlined),
                   ),
+                  onTapOutside: (PointerDownEvent event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                 ),
@@ -250,13 +259,17 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                 child: TextField(
                   controller: _dollarPriceController,
                   decoration: InputDecoration(
-                      filled: true,
-                      labelText: 'Valor do produto em U\$',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.monetization_on_outlined)),
+                    filled: true,
+                    labelText: 'Valor do produto em U\$',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: const Icon(Icons.monetization_on_outlined),
+                  ),
+                  onTapOutside: (PointerDownEvent event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                 ),
@@ -269,10 +282,10 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                   children: [
                     SwitchListTile(
                       secondary: const Icon(Icons.credit_card),
-                      value: pagouComCartao,
+                      value: _isPaidWithCreditCard,
                       onChanged: (bool value) {
                         setState(() {
-                          pagouComCartao = value;
+                          _isPaidWithCreditCard = value;
                         });
                       },
                       title: const Text('Pagou com cartão?'),
@@ -303,9 +316,8 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                           _nameController.text,
                           double.parse(_taxController.text),
                           double.parse(_dollarPriceController.text),
-                          pagouComCartao,
-                          ''
-                      );
+                          _isPaidWithCreditCard,
+                          '');
 
                       provider.addProduct(productSaved);
                       _shoppingDAO.save(productSaved);
