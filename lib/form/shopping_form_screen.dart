@@ -41,6 +41,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
       return Consumer<ShoppingProvider>(
         builder: (context, provider, _) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: const Text('Cadastro de produto'),
               backgroundColor: Colors.blueAccent.withOpacity(0.8),
@@ -203,6 +204,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
     return Consumer<ShoppingProvider>(
       builder: (context, provider, _) {
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text(
               'Cadastro de produto',
