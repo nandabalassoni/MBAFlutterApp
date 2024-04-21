@@ -47,61 +47,73 @@ class _SettingsScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Consumer<ShoppingProvider>(
       builder: (context, prefsProvider, _) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            margin: const EdgeInsets.only(left: 20, top: 40, right: 20, bottom: 20),
-            child: TextField(
-              controller: _exchangeRateTextController,
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Cotação do dolar em R\$',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none),
-                prefixIcon: const Icon(Icons.monetization_on_outlined),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(
+                  left: 20, top: 40, right: 20, bottom: 20),
+              child: TextField(
+                controller: _exchangeRateTextController,
+                decoration: InputDecoration(
+                  filled: true,
+                  labelText: 'Cotação do dolar em R\$',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none),
+                  prefixIcon: const Icon(Icons.monetization_on_outlined),
+                ),
+                onTapOutside: (PointerDownEvent event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.all(20),
-            child: TextField(
-              controller: _iofTextController,
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'IOF (\%)',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none),
-                prefixIcon: const Icon(Icons.money_off_outlined),
+            Container(
+              margin: const EdgeInsets.all(20),
+              child: TextField(
+                controller: _iofTextController,
+                decoration: InputDecoration(
+                  filled: true,
+                  labelText: 'IOF (\%)',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none),
+                  prefixIcon: const Icon(Icons.money_off_outlined),
+                ),
+                onTapOutside: (PointerDownEvent event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
-          ),
-          const Spacer(),
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.only(left: 20, bottom: 40, right: 20),
-            child: ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Ajustes atualizados com sucesso.')));
-                prefsProvider.updateSetting(Setting(
-                    double.parse(_iofTextController.text),
-                    double.parse(_exchangeRateTextController.text)));
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blueAccent.withOpacity(0.8),
-              ),
-              child: const Text(
-                'Salvar',
-                style: TextStyle(
-                  color: Colors.white,
+            const Spacer(),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(left: 20, bottom: 40, right: 20),
+              child: ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Ajustes atualizados com sucesso.')));
+                  prefsProvider.updateSetting(Setting(
+                      double.parse(_iofTextController.text),
+                      double.parse(_exchangeRateTextController.text)));
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blueAccent.withOpacity(0.8),
+                ),
+                child: const Text(
+                  'Salvar',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-        ]);
+          ],
+        );
       },
     );
   }
