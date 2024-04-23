@@ -3,7 +3,7 @@ import 'package:mba_flutter_app/dao/shopping_dao.dart';
 import 'package:mba_flutter_app/form/shopping_form_screen.dart';
 import 'package:mba_flutter_app/model/product.dart';
 import 'package:mba_flutter_app/provider/shoppingProvider.dart';
-import 'package:mba_flutter_app/service/sqlite_service.dart';
+import 'package:mba_flutter_app/widget/image_preview.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -59,9 +59,18 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
                     ),
                   );
                 },
-                child: ListTile(
-                  leading: const FlutterLogo(),
-                  title: Text(provider.products[index].name,),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 20),
+                      child: ImagePreview(provider.products[index].urlPhoto),
+                    ),
+                    const Spacer(),
+                    Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: Text(provider.products[index].name,),
+                    )
+                  ],
                 ),
               ),
             );
