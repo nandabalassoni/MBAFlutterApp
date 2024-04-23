@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mba_flutter_app/dao/shopping_dao.dart';
 import 'package:mba_flutter_app/model/product.dart';
 import 'package:mba_flutter_app/provider/shoppingProvider.dart';
@@ -18,6 +21,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
   final _taxController = TextEditingController();
   final _dollarPriceController = TextEditingController();
   final _shoppingDAO = ShoppingDAO();
+  String _imagePath = "";
 
   String _buttonTitleSaveOrUpdate = 'Cadastrar';
   bool _isPaidWithCreditCard = true;
@@ -32,6 +36,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
       _dollarPriceController.text = widget.product?.price.toString() ?? '0.0';
       _isPaidWithCreditCard = widget.product?.isPaidWithCreditCard ?? false;
       _buttonTitleSaveOrUpdate = 'Atualizar';
+      _imagePath = widget.product?.urlPhoto ?? '';
     }
   }
 
@@ -129,12 +134,31 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.image_outlined),
-                    label: const Text(
-                      'Escolher foto',
-                    ),
+                  child: Row(
+                    children: [
+                      !_imagePath.isEmpty
+                          ? ImagePreview(_imagePath) /*Image.file(File(_imagePath))*/
+                          : Text('Nada ainda'),
+                      const Spacer(),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final ImagePicker picker = ImagePicker();
+
+                          XFile? image = await picker.pickImage(
+                              source: ImageSource.gallery);
+
+                          if (image != null) {
+                            setState(() {
+                              _imagePath = image.path;
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.image_outlined),
+                        label: const Text(
+                          'Escolher foto',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const Spacer(),
@@ -172,7 +196,7 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
                                 double.parse(_taxController.text),
                                 double.parse(_dollarPriceController.text),
                                 _isPaidWithCreditCard,
-                                '');
+                                _imagePath);
 
                             provider.removeProduct(widget.product!);
                             provider.addProduct(productUpdated);
@@ -341,6 +365,22 @@ class ShoppingFormScreenState extends State<ShoppingFormScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class ImagePreview extends StatelessWidget {
+
+  String imagepath;
+
+  ImagePreview(this.imagepath);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      height: 200,
+      child: Image.file(File(imagepath)), /*Text('Image Preview step one', style: TextStyle(backgroundColor: Colors.yellow,),),*/
     );
   }
 }
