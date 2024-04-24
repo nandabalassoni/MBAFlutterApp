@@ -1,5 +1,5 @@
 name: mba_flutter_app
-description: "Projeto MBA FIAP"
+description: "Projeto Flutter MBA FIAP"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -14,9 +14,7 @@ dependencies:
   image_picker: 1.1.0
   shared_preferences: 2.2.3
   intl: 0.19.0
-  provider:
-
-  cupertino_icons: 1.0.6
+  provider: 6.1.2
   sqflite: 2.3.3
   path: 1.9.0
 
