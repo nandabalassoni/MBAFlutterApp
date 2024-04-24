@@ -1,23 +1,22 @@
 import 'package:mba_flutter_app/model/product.dart';
-import 'package:mba_flutter_app/service/sqlite_service.dart';
+import 'package:mba_flutter_app/repository/sqlite_repository.dart';
 
 class ShoppingDAO {
-
-  final sqliteService = SqliteService();
+  final sqlite = SqliteRepository();
 
   void save(Product product) {
-    sqliteService.createProduct(product);
+    sqlite.createProduct(product);
   }
 
   void update(Product product) {
-    sqliteService.updateProduct(product);
+    sqlite.updateProduct(product);
   }
 
   void delete(int id) {
-    sqliteService.deleteProduct(id);
+    sqlite.deleteProduct(id);
   }
 
   Future<List<Product>> getAllProduct() async {
-    return sqliteService.getProducts();
+    return sqlite.getProducts();
   }
 }

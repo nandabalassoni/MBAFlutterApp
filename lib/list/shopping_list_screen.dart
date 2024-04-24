@@ -20,21 +20,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProduct();
-  }
-
-  void _loadProduct() async {
-    if (_products.isEmpty) {
-      List<Product> listP = await _shoppingDAO.getAllProduct();
-
-      setState(() {
-        _products = listP;
-
-        for(final product in _products) {
-          Provider.of<ShoppingProvider>(context, listen: false).addProduct(product);
-        }
-      });
-    }
+    _loadProducts();
   }
 
   @override
@@ -69,6 +55,10 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
                     Container(
                       margin: const EdgeInsets.only(right: 20),
                       child: Text(provider.products[index].name,),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: Text('\$${provider.products[index].price}',),
                     )
                   ],
                 ),
@@ -78,5 +68,19 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
         );
       },
     );
+  }
+
+  _loadProducts() async {
+    if (_products.isEmpty) {
+      List<Product> listP = await _shoppingDAO.getAllProduct();
+
+      setState(() {
+        _products = listP;
+      });
+
+      for(final product in _products) {
+        Provider.of<ShoppingProvider>(context, listen: false).addProduct(product);
+      }
+    }
   }
 }

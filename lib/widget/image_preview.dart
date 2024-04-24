@@ -10,9 +10,13 @@ class ImagePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
-      height: 200,
-      child: Image.file(File(path)),
+      width: 100,
+      height: 100,
+      child: Image.file(
+        File(
+          path,
+        ),
+      ),
     );
   }
 }
