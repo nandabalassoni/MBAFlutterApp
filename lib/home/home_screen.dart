@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mba_flutter_app/form/shopping_form_screen.dart';
 import 'package:mba_flutter_app/list/shopping_list_screen.dart';
-import 'package:mba_flutter_app/service/sqlite_service.dart';
+import 'package:mba_flutter_app/repository/sqlite_repository.dart';
 import 'package:mba_flutter_app/setting/settings_screen.dart';
 import 'package:mba_flutter_app/total_purchase/sub_total_screen.dart';
 
@@ -13,7 +13,9 @@ class HomeScreen extends StatelessWidget {
     return MaterialApp(
       title: '',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blueAccent,
+        ),
         useMaterial3: true,
       ),
       home: _MyHomeScreen(),
@@ -27,7 +29,7 @@ class _MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<_MyHomeScreen> {
-  int currentScreenIndex = 0;
+  int _currentScreenIndex = 0;
 
   final List<String> _screenTitles = [
     "Lista de Compras",
@@ -41,14 +43,10 @@ class _MyHomeScreenState extends State<_MyHomeScreen> {
     const SubTotalScreen()
   ];
 
-  //Inicializa o banco de dados ao iniciar o state
-  late SqliteService _sqliteService;
-
   @override
   void initState() {
     super.initState();
-    _sqliteService = SqliteService();
-    _sqliteService.initializeDB().whenComplete(() async {});
+    SqliteRepository().initializeDB().whenComplete(() async {});
   }
 
   @override
@@ -74,19 +72,21 @@ class _MyHomeScreenState extends State<_MyHomeScreen> {
         ],
         backgroundColor: Colors.blueAccent.withOpacity(0.8),
         title: Text(
-          _screenTitles[currentScreenIndex],
-          style: const TextStyle(color: Colors.white,),
+          _screenTitles[_currentScreenIndex],
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
       body: IndexedStack(
-        index: currentScreenIndex,
+        index: _currentScreenIndex,
         children: _screens,
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: currentScreenIndex,
+        selectedIndex: _currentScreenIndex,
         onDestinationSelected: (int index) {
           setState(() {
-            currentScreenIndex = index;
+            _currentScreenIndex = index;
           });
         },
         destinations: const <Widget>[

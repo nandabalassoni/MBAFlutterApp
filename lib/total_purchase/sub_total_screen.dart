@@ -20,25 +20,11 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<void> _loadValues() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    Provider
-        .of<ShoppingProvider>(context, listen: false)
-        .updateSetting(
-          Setting(
-            prefs.getDouble('iof') ?? 0.0,
-            prefs.getDouble('exchangeRate') ?? 0.0
-          )
-    );
+    _loadValues();
   }
 
   @override
   Widget build(BuildContext context) {
-    _loadValues();
-
     return Consumer<ShoppingProvider>(
       builder: (context, provider, _) {
         return Column(
@@ -119,6 +105,15 @@ class _SubTotalScreenState extends State<SubTotalScreen> {
         );
       },
     );
+  }
+
+  Future<void> _loadValues() async {
+    final prefs = await SharedPreferences.getInstance();
+    Provider.of<ShoppingProvider>(
+      context,
+      listen: false,
+    ).updateSetting(Setting(
+        prefs.getDouble('iof') ?? 1.0, prefs.getDouble('exchangeRate') ?? 1.0));
   }
 
   double _totalPrices(List<Product> products) {

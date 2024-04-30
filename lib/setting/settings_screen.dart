@@ -12,7 +12,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingScreen> {
-  double _iofValue = 0.0;
+  double _iofValue = 1.0;
   double _exchangeRateValue = 1.0;
   final _iofTextController = TextEditingController();
   final _exchangeRateTextController = TextEditingController();
@@ -23,30 +23,10 @@ class _SettingsScreenState extends State<SettingScreen> {
     _loadValues();
   }
 
-  Future<void> _loadValues() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _iofValue = prefs.getDouble('iof') ?? 0.0;
-      _exchangeRateValue = prefs.getDouble('exchangeRate') ?? 1.0;
-      _iofTextController.text = _iofValue.toString();
-      _exchangeRateTextController.text = _exchangeRateValue.toString();
-    });
-  }
-
-  Future<void> _saveValues() async {
-    final prefs = await SharedPreferences.getInstance();
-    _iofValue = double.parse(_iofTextController.text);
-    _exchangeRateValue = double.parse(_exchangeRateTextController.text);
-    setState(() {
-      prefs.setDouble('iof', _iofValue);
-      prefs.setDouble('exchangeRate', _exchangeRateValue);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ShoppingProvider>(
-      builder: (context, prefsProvider, _) {
+      builder: (context, provider, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,8 +65,7 @@ class _SettingsScreenState extends State<SettingScreen> {
                 onTapOutside: (PointerDownEvent event) {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: TextInputType.number,
               ),
             ),
             const Spacer(),
@@ -95,11 +74,13 @@ class _SettingsScreenState extends State<SettingScreen> {
               margin: const EdgeInsets.only(left: 20, bottom: 40, right: 20),
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Ajustes atualizados com sucesso.')));
-                  prefsProvider.updateSetting(Setting(
-                      double.parse(_iofTextController.text),
-                      double.parse(_exchangeRateTextController.text)));
+                  _saveSettings(
+                    provider,
+                    Setting(
+                      double.parse(_iofTextController.text.replaceAll(',', '.')),
+                      double.parse(_exchangeRateTextController.text.replaceAll(',', '.')),
+                    ),
+                  );
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blueAccent.withOpacity(0.8),
@@ -115,6 +96,38 @@ class _SettingsScreenState extends State<SettingScreen> {
           ],
         );
       },
+    );
+  }
+
+  Future<void> _loadValues() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _iofValue = prefs.getDouble('iof') ?? 1.0;
+      _exchangeRateValue = prefs.getDouble('exchangeRate') ?? 1.0;
+      _iofTextController.text = _iofValue.toString();
+      _exchangeRateTextController.text = _exchangeRateValue.toString();
+    });
+  }
+
+  _saveSettings(ShoppingProvider provider, Setting setting) {
+    if (setting.exchangeRate <= 0.0) {
+      _showMessage('A cotação do dolar deve ser maior que 0.0');
+      return;
+    }
+
+    if (setting.iof <= 0.0) {
+      _showMessage('O IOF deve ser maior que 0.0');
+    }
+
+    provider.updateSetting(setting);
+    _showMessage('Ajustes atualizados.');
+  }
+
+  _showMessage(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+      ),
     );
   }
 }
